@@ -1,0 +1,105 @@
+# ==========================================
+# ATMOSYNC PROJECT
+# Step 2: IoT Sensor Data Generation
+# ==========================================
+
+import pandas as pd
+import random
+import time
+from datetime import datetime
+import os
+
+# 1. Project heading
+print("======================================")
+print("       ATMOSYNC PROJECT")
+print("   IoT SENSOR DATA GENERATION")
+print("======================================")
+
+# 2. Create 10 shipping container IDs
+container_ids = [
+    "C101", "C102", "C103", "C104", "C105",
+    "C106", "C107", "C108", "C109", "C110"
+]
+
+# 3. Create output folder and CSV file
+os.makedirs("data", exist_ok=True)
+
+file_path = "data/sensor_data.csv"
+
+# 4. Generate sensor readings
+def generate_sensor_data():
+
+    records = []
+
+    for container in container_ids:
+
+        temperature = round(random.uniform(5, 35), 2)
+
+        humidity = round(random.uniform(40, 95), 2)
+
+        vibration = round(random.uniform(0, 5), 2)
+
+        timestamp = datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        # 5. Calculate spoilage risk
+        if temperature > 25 or humidity > 85:
+            risk = "HIGH RISK"
+
+        elif temperature > 20 or humidity > 75:
+            risk = "MEDIUM RISK"
+
+        else:
+            risk = "LOW RISK"
+
+        # 6. Store the sensor readings
+        record = {
+            "container_id": container,
+            "timestamp": timestamp,
+            "temperature": temperature,
+            "humidity": humidity,
+            "vibration": vibration,
+            "commodity": "Avocado",
+            "location": "Pune",
+            "spoilage_risk": risk
+        }
+
+        records.append(record)
+
+    return records
+
+
+# 7. Generate data for 5 rounds
+for round_number in range(1, 6):
+
+    print(f"\nGenerating Round {round_number}...")
+
+    sensor_data = generate_sensor_data()
+
+    # Convert data into a DataFrame
+    df = pd.DataFrame(sensor_data)
+
+    # Save records to CSV
+    df.to_csv(
+        file_path,
+        mode="a",
+        header=not os.path.exists(file_path)
+        or os.path.getsize(file_path) == 0,
+        index=False
+    )
+
+    print(df.to_string(index=False))
+
+    print("\n10 container records saved successfully!")
+
+    # Wait 2 seconds before next round
+    time.sleep(2)
+
+
+# 8. Final message
+print("\n======================================")
+print("SENSOR DATA GENERATION COMPLETED!")
+print("Total records generated: 50")
+print("CSV file: data/sensor_data.csv")
+print("======================================")
